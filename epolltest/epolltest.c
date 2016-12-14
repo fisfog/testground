@@ -13,6 +13,24 @@
 
 #define PORT 20199
 
+int setSocketNonblock(int sfd)
+{
+	int flags, ret;
+	flags = fcntl(sfd, F_GETFL, 0);
+	if(flags==-1){
+		perror("fcntl get fd flag error");
+		return -1;
+	}
+
+	flags |= O_NONBLOCK;
+	ret = fcntl(sfd, F_SETFL, flags);
+	if(ret==-1){
+		perror("fcntl set fd flag error");
+		return -1;
+	}
+	return 0;
+}
+
 void server()
 {
 	struct sockaddr_in servaddr, cliaddr;
