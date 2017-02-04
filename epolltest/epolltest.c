@@ -209,7 +209,7 @@ void server()
 					}
 
 					event.data.fd = connfd;
-					event.events = EPOLLIN | EPOLLET;
+					event.events = EPOLLIN | EPOLLERR;
 					ret = epoll_ctl(efd, EPOLL_CTL_ADD, connfd, &event);
 					if(ret){
 						perror("epoll ctl add err!");
