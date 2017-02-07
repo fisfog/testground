@@ -19,6 +19,22 @@
  * using the generic single-entry routines.
  */
 
+#include <stdio.h>
+
+typedef enum{true=1, false=0} bool;
+
+struct list_head{
+	struct list_head *next, *prev;
+};
+
+
+#define READ_ONCE(_x_) (_x_)
+#define WRITE_ONCE(_x_, _val_) (_x_) = (_val_)
+
+#define POISON_POINTER_DELTA 0
+#define LIST_POISON1  ((void *) 0x100 + POISON_POINTER_DELTA)
+#define LIST_POISON2  ((void *) 0x200 + POISON_POINTER_DELTA)
+
 #define LIST_HEAD_INIT(name) { &(name), &(name) }
 
 #define LIST_HEAD(name) \
@@ -356,6 +372,15 @@ static inline void list_splice_tail_init(struct list_head *list,
 		INIT_LIST_HEAD(list);
 	}
 }
+#ifndef offsetof
+#define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+#endif
+
+#ifndef container_of
+#define container_of(ptr, type, member) ({                      \
+	const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
+	(type *)( (char *)__mptr - offsetof(type,member) );})
+#endif
 
 /**
  * list_entry - get the struct for this entry
@@ -609,6 +634,14 @@ static inline void list_splice_tail_init(struct list_head *list,
  * too wasteful.
  * You lose the ability to access the tail in O(1).
  */
+
+struct hlist_head{
+	struct hlist_node *first;
+};
+
+struct hlist_node{
+	struct hlist_node *next, **pprev;
+};
 
 #define HLIST_HEAD_INIT { .first = NULL }
 #define HLIST_HEAD(name) struct hlist_head name = {  .first = NULL }
