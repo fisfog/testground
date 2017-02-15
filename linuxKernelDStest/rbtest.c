@@ -2,6 +2,12 @@
 
 #include "rbtree.h"
 
+#ifdef typeof
+#define lengthof(arr) (sizeof(arr))/(sizeof(typeof(arr)))
+#else
+#define lengthof(arr) (sizeof(arr))/(sizeof(*(arr)))
+#endif
+
 struct testData{
 	struct rb_node	*rb_node;
 	int		key;
@@ -45,5 +51,19 @@ int testInsert(struct rb_root *root, struct testData *data)
 
 int main(int argc, char **argv)
 {
+	struct rb_root testtest = RB_ROOT;
+	int tarr[] = {2,5,1,6,8,9,3,4};
+	char namearr[][10] = {"jack","mike","oven","rachel","kally","larry","ql","bell"};
+	//char tarr[] = "abc";
+	printf("debug:length of tarr[%ld]\n", lengthof(tarr));
+	printf("debug:length of namearr[%ld]\n", lengthof(namearr));
+	int tarr_n = lengthof(tarr);
+	int i;
+	/*
+	for(i=0;i<tarr_n;++i){
+		struct testData *td = malloc(sizeof(testData));
+	}
+	*/
+
 	return 0;
 }
