@@ -34,3 +34,6 @@
 
 # execute file
 epolltest
+
+# vim swp
+*.swp

@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-I.
-DEPS=rbtree.h list.h
+DEPS=rbtree.h 
 OBJ=rbtree.o rbtest.o
 
 %.o: %.c $(DEPS)
@@ -9,7 +9,7 @@ OBJ=rbtree.o rbtest.o
 rbtest: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS)
 
-.phony: clean
+.PHONY: clean
 
 clean:
-	-rm -f $(OBJ)
+	-rm -f rbtest $(OBJ)
