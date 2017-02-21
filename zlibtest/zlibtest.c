@@ -7,7 +7,7 @@
 #include <string.h>
 #include <zlib.h>
 
-#define CHUNK 20480
+#define CHUNK 128000
 
 int def(FILE *source, FILE *dest, int level)
 {
@@ -46,6 +46,48 @@ int def(FILE *source, FILE *dest, int level)
 	}while(flush != Z_FINISH);
 
 	(void)deflateEnd(&strm);
+	return Z_OK;
+}
+
+int def2(FILE *source, unsigned char *buffer, long *buffer_len, int level)
+{
+	int ret, flush;
+	unsigned have;
+	long len = 0, inlen = 0;
+	z_stream strm;
+	unsigned char in[CHUNK];
+	unsigned char out[CHUNK];
+
+	strm.zalloc = Z_NULL;
+	strm.zfree = Z_NULL;
+	strm.opaque = Z_NULL;
+	ret = deflateInit(&strm, level);
+	if(ret != Z_OK){
+		return ret;
+	}
+
+	do{
+		strm.avail_in = fread(in, 1, CHUNK, source);
+		inlen += strm.avail_in;
+		if(ferror(source)){
+			(void)deflateEnd(&strm);
+			return Z_ERRNO;
+		}
+		flush = feof(source)? Z_FINISH: Z_NO_FLUSH;
+		strm.next_in = in;
+		do{
+			strm.avail_out = CHUNK;
+			strm.next_out = out;
+			ret = deflate(&strm, flush);
+			have = CHUNK - strm.avail_out;
+			memcpy(buffer+len,out,have);
+			len += have;
+		}while(strm.avail_out == 0);
+	}while(flush != Z_FINISH);
+
+	(void)deflateEnd(&strm);
+	printf("compress rate:[%0.4lf]\n",((double)(inlen-len)/(double)inlen));
+	*buffer_len = len;
 	return Z_OK;
 }
 
@@ -111,12 +153,16 @@ int main(int argc, char **argv)
 	if(argc!=4){
 		usage();
 	}
+	long len;
+	unsigned char buf[1024*1024*3]={0};
 	FILE *infp;
 	FILE *outfp;
 	infp = fopen(argv[2],"r");
 	outfp = fopen(argv[3],"w");
-	if(strcmp(argv[1],"-d")==0)
-		def(infp,outfp,6);
+	if(strcmp(argv[1],"-d")==0){
+		def2(infp,buf,&len,9);
+		fwrite(buf,1,len,outfp);
+	}
 	else if(strcmp(argv[1],"-i")==0)
 		inf(infp,outfp);
 	else{
