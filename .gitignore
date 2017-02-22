@@ -37,3 +37,8 @@ epolltest
 
 # vim swp
 *.swp
+
+# test file
+*.tt
+*.def
+*.inf
