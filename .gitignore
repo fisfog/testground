@@ -34,6 +34,9 @@
 
 # execute file
 epolltest
+listtest
+rbtest
+zlibtest
 
 # vim swp
 *.swp
