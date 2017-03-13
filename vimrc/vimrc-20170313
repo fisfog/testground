@@ -1,0 +1,57 @@
+" Vimrc for myl
+
+set autoread
+
+set wildignore=*.o,*~,*.pyc
+
+set ruler
+
+set cmdheight=2
+
+" line number
+set nu
+
+" auto indent
+set ai
+set si
+syntax on
+
+" color
+syntax enable
+set background=dark
+colorscheme solarized	" solarized colorscheme
+"colorscheme badwolf " badwolf colorscheme
+
+set tabstop=4			" number of visual spaces for TAB
+
+set softtabstop=4		" number of spaces in tab when editing
+
+set showcmd				" show cmd in bottom bar
+
+set cursorline			" highlight current line
+
+set wildmenu			" visual autocomplete for command menu
+
+set lazyredraw			" redraw only when we need to
+
+set showmatch			" highlight matching {[()]}
+
+" searching
+set incsearch			" search as charactors are enterd
+set hlsearch			" highlight matches
+
+" folding
+set foldenable			" enable folding
+set foldlevelstart=10	" open most folds by default
+set foldnestmax=10		" 10 nested fold max
+set foldmethod=syntax
+nnoremap <space> za
+
+" movement
+" highlight last inserted text
+nnoremap gV `[v`] 
+
+let mapleader=","		" leader is comma
+
+
+nnoremap == gg=G
